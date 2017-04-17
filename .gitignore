@@ -1,7 +1,5 @@
 !pom.xml
-!circle.yml
 !*.java
-!src/site/*.xml
 target/**
 
 /bin/
