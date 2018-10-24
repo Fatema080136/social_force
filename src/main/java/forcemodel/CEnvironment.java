@@ -52,13 +52,13 @@ public class CEnvironment extends JPanel {
 
         //first test
 
-        IntStream.range( 0, 150 )
+        IntStream.range( 0, 10 )
                 .forEach( i -> m_pedestrian.add( new CPedestrian( new Vector2d( 0 + ( Math.random() * 100 ), 100 + ( Math.random() * 50 ) ),
                         rand.nextGaussian() * m_GaussianStandardDeviation + m_GaussianMean, new CGoal( 415, 250, 0, 100 ).get_goals(), this ) ) );
 
-        IntStream.range( 0, 150 )
+        /*IntStream.range( 0, 10 )
                 .forEach( i -> m_pedestrian.add( new CPedestrian( new Vector2d( 400 + ( Math.random() * 100 ), 100 + ( Math.random() * 50 ) ),
-                        rand.nextGaussian() * m_GaussianStandardDeviation + m_GaussianMean, new CGoal( 310, 350, 550, 200 ).get_goals(), this ) ) );
+                        rand.nextGaussian() * m_GaussianStandardDeviation + m_GaussianMean, new CGoal( 310, 350, 550, 200 ).get_goals(), this ) ) );*/
 
 
     }
@@ -91,17 +91,17 @@ public class CEnvironment extends JPanel {
      **/
     private void drawPedestrian() {
         graphics2d.setColor( Color.BLUE ) ;
-        for( int j = 0; j < 150; j++ )
+        for( int j = 0; j < 10; j++ )
         {
             Ellipse2D.Double shape = new Ellipse2D.Double( m_pedestrian.get(j).getPosition().getX(), m_pedestrian.get(j).getPosition().getY(), 10, 10 );
             graphics2d.fill( shape );
         }
-        graphics2d.setColor( Color.GREEN ) ;
-        for( int j = 150; j < 300; j++ )
+        /*graphics2d.setColor( Color.GREEN ) ;
+        for( int j = 11; j < 20; j++ )
         {
             Ellipse2D.Double shape = new Ellipse2D.Double( m_pedestrian.get(j).getPosition().getX(), m_pedestrian.get(j).getPosition().getY(), 10, 10 );
             graphics2d.fill( shape );
-        }
+        }*/
         /*
         m_pedestrian.stream()
                 .forEach(i -> {

@@ -7,7 +7,8 @@ import java.util.ArrayList;
  * calculate all forces
  * Created by Fatema on 10/22/2016.
  */
-public class CForce {
+public class CForce
+{
 
     private static final double m_detta = 2;
     private static final double m_lamda = 0.2;

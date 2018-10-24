@@ -91,18 +91,26 @@ public class CPedestrian implements IPedestrian{
         }
 
 
-        for ( int i = 0; i < l_env.getPedestrianinfo().size(); i++ )
+        /*for ( int i = 0; i < l_env.getPedestrianinfo().size(); i++ )
         {
             if( !l_env.getPedestrianinfo().get(i).equals( this ) )
             {
                 l_repulsetoOthers = CVector.add( l_repulsetoOthers, CForce.repulseotherPed( this, l_env.getPedestrianinfo().get( i ), l_env.test ) );
             }
-        }
+        }*/
 
-        final Vector2d l_temp = CVector.add( CForce.drivingForce( l_desiredVelocity, this.getVelocity() ), l_repulsetoOthers );
+        Vector2d desired =  CVector.scale( this.m_maxspeed, CVector.normalize( CForce.drivingForce( l_desiredVelocity,
+                this.getVelocity() ) ) );
+        Vector2d steer = CVector.scale( 1.5, CVector.truncate( CVector.sub(desired,this.m_velocity), m_maxforce ) );
 
-        return CVector.truncate( CVector.add( l_temp, l_repulsetoWall ), m_maxforce );
+        final Vector2d l_group = CVector.add( cohesion(), CVector.scale( 1.5, separate() ), align() );//CVector.scale(1.5,separate())
+        return CVector.truncate( CVector.add( l_group, steer ), m_maxforce ); //, l_repulsetoWall
+        //return CVector.add( l_group, steer );
+    }
 
+    /*public Vector2d seek()
+    {
+        return
     }
 
     /**
@@ -165,4 +173,94 @@ public class CPedestrian implements IPedestrian{
 
         return this;
     }
+
+    Vector2d separate ()
+    {
+        // Note how the desired separation is based
+        // on the Vehicle’s size.
+        float desiredseparation = 8; // radious *2
+        Vector2d sum = new Vector2d();
+        int count = 0;
+        for( int i = 0; i < l_env.getPedestrianinfo().size(); i++ )
+        {
+            double d = CVector.distance( this.m_position, l_env.getPedestrianinfo().get(i).m_position );
+            if ((d > 0) && (d < desiredseparation))
+            {
+                Vector2d diff = CVector.direction(this.m_position, l_env.getPedestrianinfo().get(i).m_position );
+                    // What is the magnitude of the PVector
+                    // pointing away from the other vehicle?
+                    // The closer it is, the more we should flee.
+                    // The farther, the less. So we divide
+                    // by the distance to weight it appropriately.
+                diff = CVector.scale( 1/(float)d, diff );
+                sum.add(diff);
+                count++;
+            }
+        }
+
+
+        if (count > 0)
+        {
+            //sum = CVector.normalize( CVector.scale(1/ (float)count, sum ) );
+            sum = CVector.truncate( CVector.sub( CVector.scale( this.m_maxspeed, CVector.normalize( CVector.scale(1/ (float)count, sum ) ) ),
+                    this.m_velocity), m_maxforce );
+            /*sum.mult(maxspeed);
+            PVector steer = PVector.sub(sum, vel);
+            steer.limit(maxforce);
+            applyForce(steer);*/
+            return sum;
+        }
+        else { return new Vector2d(0,0); }
+    }
+
+    Vector2d align()
+    {
+        // This is an arbitrary value and could
+        // vary from boid to boid.
+        float neighbordist = 30;
+        Vector2d sum = new Vector2d();
+        int count = 0;
+        for( int i = 0; i < l_env.getPedestrianinfo().size(); i++ )
+        {
+            double d = CVector.distance( this.m_position, l_env.getPedestrianinfo().get(i).m_position );
+            if ((d > 0) && (d < neighbordist))
+            {
+                sum.add(l_env.getPedestrianinfo().get(i).m_velocity);
+                count++;
+            }
+        }
+
+        if (count > 0)
+        {
+            sum = CVector.truncate( CVector.sub( CVector.scale( this.m_maxspeed, CVector.normalize( CVector.scale(1/ (float)count, sum ) ) ),
+                    this.m_velocity), m_maxforce );
+            return sum;
+        }
+        else { return new Vector2d(0,0); }
+        //[end]
+    }
+
+    Vector2d cohesion ()
+    {
+        float neighbordist = 30;
+        Vector2d sum = new Vector2d();
+        int count = 0;
+        for( int i = 0; i < l_env.getPedestrianinfo().size(); i++ )
+        {
+            double d = CVector.distance( this.m_position, l_env.getPedestrianinfo().get(i).m_position );
+            if ((d > 0) && (d < neighbordist))
+            {
+                sum.add(l_env.getPedestrianinfo().get(i).m_position);
+                count++;
+            }
+        }
+
+        if (count > 0) {
+            sum = CVector.truncate( CVector.sub( CVector.scale( this.m_maxspeed, CVector.normalize( CVector.scale(1/ (float)count, sum ) ) ),
+                    this.m_velocity), m_maxforce );
+            return sum;
+        }
+        else { return new Vector2d(0,0); }
+    }
+
 }
