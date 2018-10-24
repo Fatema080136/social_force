@@ -10,8 +10,8 @@ import java.util.ArrayList;
 public class CPedestrian implements IPedestrian{
 
     private static final double m_maxspeedfactor = 2.5;
-    private static final double m_maxforce = 3.0;
-    private static final double m_radius = 10;
+    private static final double m_maxforce = 0.1;
+    private static final double m_radius = 5;
     private Vector2d m_position;
     private Vector2d m_goal;
     private ArrayList<Vector2d> m_goals;
@@ -103,7 +103,7 @@ public class CPedestrian implements IPedestrian{
                 this.getVelocity() ) ) );
         Vector2d steer = CVector.scale( 1.5, CVector.truncate( CVector.sub(desired,this.m_velocity), m_maxforce ) );
 
-        final Vector2d l_group = CVector.add( cohesion(), CVector.scale( 1.5, separate() ), align() );//CVector.scale(1.5,separate())
+        final Vector2d l_group = CVector.add( CVector.scale( 0.5, cohesion() ), CVector.scale( 1.5, separate() ), CVector.scale( 0.5, align() ) );//CVector.scale(1.5,separate())
         return CVector.truncate( CVector.add( l_group, steer ), m_maxforce ); //, l_repulsetoWall
         //return CVector.add( l_group, steer );
     }
@@ -178,7 +178,7 @@ public class CPedestrian implements IPedestrian{
     {
         // Note how the desired separation is based
         // on the Vehicle’s size.
-        float desiredseparation = 8; // radious *2
+        float desiredseparation = 10; // radious *2
         Vector2d sum = new Vector2d();
         int count = 0;
         for( int i = 0; i < l_env.getPedestrianinfo().size(); i++ )
@@ -217,7 +217,7 @@ public class CPedestrian implements IPedestrian{
     {
         // This is an arbitrary value and could
         // vary from boid to boid.
-        float neighbordist = 30;
+        float neighbordist = 40;
         Vector2d sum = new Vector2d();
         int count = 0;
         for( int i = 0; i < l_env.getPedestrianinfo().size(); i++ )
